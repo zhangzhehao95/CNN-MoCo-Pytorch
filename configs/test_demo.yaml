@@ -1,0 +1,84 @@
+# Experiment
+save_dir: ./Pytorch_Exp
+exp_name: pretrained    # save_dir/exp_name/[checkpoints, log, tensorboard...]
+
+# Mode
+train: False
+valid: False
+test: False      # Targets available
+predict: True   # Targets not available
+
+# Dataset
+train_dir: ./data/self_contained_train
+valid_dir: ./data/SPARE_valid_npy_3D
+test_dir: ./data/SPARE_test_npy_3D
+predict_dir: ./data/SPARE_test_npy_3D
+
+phase_num: 10
+data_size: [224, 96, 224]   # size of the origin image volume
+patch_size: [64, 96, 64]    # patch size for network input, whole volume training if equals to data size
+patch_stride: [40, 96, 40]  # patching step
+
+# Setting
+unbiased_batch: False       # [True | False], can only be used for self-contained dataset
+volume_infer: False         # [True | False], inference on the whole volume or patch-by-patch
+manual_seed: 42  # random seed, [number or null]
+resume: False    # resume previous training
+resume_path: ./Pytorch_Exp/pretrained/checkpoints/final_weights.pth # full path to the saved weights
+
+# Training parameters
+batch_size: 16
+epoch_num: 100
+init_lr: 4.0e-4
+weight_decay: 0.0   # L2 penalty
+
+# Network parameters
+model: UNet   # [UNet | ResUNet | DnCNN | RDN]
+loss: L2      # [L1 | L2]
+normalization: Batch  # [Batch | Instance | None]
+activation: ReLU      # [ReLU | LeakyReLU]
+learn_residual: True
+
+# Unet specific setting
+num_level: 4        # number of resolutions, including the input level and bottleneck level
+ch_base: 64         # channel number for the first level
+conv_per_level: 2   # number of conv layers per level
+down_sample: MaxPooling   # [StrideConv | MaxPooling]
+up_sample: UpSample       # [TransConv | MaxPooling]
+
+# Res-Unet specific setting
+bottleneck: False
+
+# DnCNN specific setting
+DnCNN_depth: 10
+DnCNN_ch: 64
+
+# RDN specific setting
+fea_extract_ch: 32
+RDB_num: 2
+RDB_growth_rate: 16
+RDB_layer: 4  # excluding the final fusion
+
+# Saving
+ckpt_enabled: True  # whether to save model weights
+save_interval: 5    # epoch interval for ckpt saving
+save_best: True     # whether track the loss to keep the best model with minimum valid/train loss
+pretrained_ckpt_file: final_weights.pth  # [final_weights.pth | ckpt_best.pth]
+
+save_input_mha: False
+spacing: [2, 2, 2]
+origin: [-223, -95, -223]
+direction: [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]
+
+# Learning rate scheduler
+lr_scheduler:
+  type: warmup_annealing_decay # [no_decay | exp_decay | power_decay | step_decay | boundary_decay | plateau_decay | warmup_annealing_decay]
+  factor: 1.0 # decay rate
+  spe_arg: 10 # special argument used in some schedulers
+
+# Early stop
+early_stopping:
+  type: None  # [None | loss_improve]
+  patience: 5
+  min_epoch: 50
+  min_improve: 0
