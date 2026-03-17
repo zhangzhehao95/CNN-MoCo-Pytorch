@@ -8,5 +8,10 @@ Zhang, Z, Liu, J, Yang, D, Kamilov, US, Hugo, GD. Deep learning-based motion com
 ## Pretrained weights
 https://drive.google.com/drive/folders/1FL8zqCIHvYtF9DTJxUJ_2vVKhufLVsGb?usp=drive_link
 
+After getting the pretrained weights, run the code: 
+```
+python code/main.py -c configs/test_demo.yaml
+```
+
 ## Tensorflow version
 https://github.com/zhangzhehao95/CNN-MoCo
